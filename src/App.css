@@ -1,38 +1,86 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+body {
+    font-size: 10px;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+  
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+      monospace;
   }
-  to {
-    transform: rotate(360deg);
+  
+ .container {
+    padding: 0 10%;
+ }
+
+  .search {
+    margin: 0px;
+    background-color: #fff;
+    border-radius: 20px;
+    width: 100%;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    .MuiOutlinedInput-notchedOutline {
+      border-style: none;
+      position: relative;
+    }
   }
-}
+  
+  .searchList {
+    position: absolute;
+    width: 300px;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: 5px;
+    top: 40px; /* Adjust based on the actual height of your TextField */
+    left: 0;
+    z-index: 10; /* High enough to overlay other components but not too high */
+  }
+  
+  .listItem {
+    color: #000;
+  }
+  
+  
+  @media (max-width: 630px) {
+    .search {
+      margin-top: 20px;
+      width: 180px;
+      background-color: #fff;
+      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      border-radius: 20px;
+      .MuiOutlinedInput-notchedOutline {
+        border-style: none;
+        position: relative;
+      }
+    }
+  
+    .searchList {
+      position: absolute;
+      width: 180px;
+      background-color: #fff;
+      border: 1px solid #000;
+      border-radius: 5px;
+      top: 40px;
+      left: 50%;
+      z-index: 10;
+    }
+  }
+  
+  .smallScreen {
+    padding-top: 15px;
+  }
+  
+  .loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+
+  .searchButton {
+     text-transform: none;
+  }
+  
+  
