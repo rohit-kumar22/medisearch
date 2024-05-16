@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/medisearch/static/css/main.e95241b6.css",
+    "main.js": "/medisearch/static/js/main.5a922b28.js",
+    "static/js/453.0caa930c.chunk.js": "/medisearch/static/js/453.0caa930c.chunk.js",
+    "index.html": "/medisearch/index.html",
+    "main.e95241b6.css.map": "/medisearch/static/css/main.e95241b6.css.map",
+    "main.5a922b28.js.map": "/medisearch/static/js/main.5a922b28.js.map",
+    "453.0caa930c.chunk.js.map": "/medisearch/static/js/453.0caa930c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e95241b6.css",
+    "static/js/main.5a922b28.js"
+  ]
+}
