@@ -14,6 +14,11 @@ body {
     padding: 0 10%;
  }
 
+ .heading {
+    text-align: center;
+    margin-top: 20px;
+ }
+
   .search {
     margin: 0px;
     background-color: #fff;

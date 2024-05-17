@@ -29,13 +29,16 @@ function App() {
     fetchData();
   }, [searchKeyword]);
 
-
+console.log(data)
   return (
     <Box className="container">
-      <Typography>Cappsule Web Development</Typography>
-      <SearchBar setSearchKeyword={setSearchKeyword} />
+      <Typography className="heading" mt={5}>Cappsule Web Development</Typography>
+      <Box mt={2} sx={{borderBottom: "1px solid gray", paddingBottom: "50px"}}>
+      <SearchBar setSearchKeyword={setSearchKeyword}/>
+      </Box>
+      
       {data?.data.saltSuggestions.map((item) => (
-        <SaltCard saltData={item} />
+        <SaltCard key={item.id} saltData={item} />
       ))}
     </Box>
   );

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import {
-  AppBar, TextField, Box, InputAdornment, List, ListItem, ListItemText, Button
+   TextField, Box, InputAdornment, List, ListItem, ListItemText, Button
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { useRecentSearches } from '../hooks/useRecentSearches';
@@ -24,7 +24,7 @@ const SearchBar = React.memo(({setSearchKeyword})=>{
       };
     }, []);
     return(
-          <Box ref={searchRef} sx={{ position: 'relative', width: 'auto', textAlign: 'center' }}>
+          <Box ref={searchRef} sx={{ position: 'relative', width: 'auto', textAlign: 'center'}}>
             <TextField
               size="small"
               className='search'
@@ -37,7 +37,7 @@ const SearchBar = React.memo(({setSearchKeyword})=>{
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <Button className='searchButton'>Search</Button>
+                    <Button sx={{textTransform: 'none', color: '#2a527a', fontWeight: 700}}>Search</Button>
                   </InputAdornment>
                 ),
                 startAdornment:(
