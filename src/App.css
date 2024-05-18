@@ -12,11 +12,12 @@ body {
   
  .container {
     padding: 0 10%;
+    min-height: calc(100vh - 16px);
  }
 
  .heading {
     text-align: center;
-    margin-top: 20px;
+    font-size: 3.4rem;
  }
 
   .search {

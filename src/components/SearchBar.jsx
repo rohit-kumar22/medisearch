@@ -37,12 +37,14 @@ const SearchBar = React.memo(({setSearchKeyword})=>{
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <Button sx={{textTransform: 'none', color: '#2a527a', fontWeight: 700}}>Search</Button>
+                    <Button sx={{textTransform: 'none', color: '#2a527a', fontWeight: 700}}
+                    onClick={() => handleSearch(searchTerm)}
+                    >Search</Button>
                   </InputAdornment>
                 ),
                 startAdornment:(
                     <InputAdornment position="start">
-                    <SearchIcon sx={{ cursor: "pointer" }} onClick={() => handleSearch(searchTerm)} />
+                    <SearchIcon />
                   </InputAdornment>
                 ),
               }}

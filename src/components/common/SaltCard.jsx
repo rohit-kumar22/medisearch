@@ -8,6 +8,13 @@ const styles = {
     padding: "0.2rem 0.5rem",
     borderRadius: "10px",
     color: "#112d31",
+    maxWidth: '7rem',
+    height: '2.5rem',
+    fontWeight: 600,
+    boxShadow: 'rgba(183, 218, 212, 0.3) 0px 0px 29px 0px',
+    textOverflow: 'ellipses',
+    whiteSpace: 'nowrap',
+    textOverflow: 'hidden'
   },
   container: {
     boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
@@ -58,13 +65,50 @@ const styles = {
     textTransform: "none",
     fontWeight: 700,
   },
+  notSelected: {
+    textTransform: "none",
+    border: "2px solid #ababab",
+    padding: "0.2rem 0.5rem",
+    borderRadius: "10px",
+    color: "#555",
+    maxWidth: '7rem',
+    height: '2.5rem',
+    textOverflow: 'ellipses',
+    whiteSpace: 'nowrap',
+    textOverflow: 'hidden'
+  },
+  notAvailableButton: {
+    textTransform: "none",
+    border: "2px dashed #112d31",
+    padding: "0.2rem 0.5rem",
+    borderRadius: "10px",
+    color: "#112d31",
+    maxWidth: '7rem',
+    height: '2.5rem',
+    fontWeight: 600,
+    boxShadow: 'rgba(183, 218, 212, 0.3) 0px 0px 29px 0px',
+    textOverflow: 'ellipses',
+    whiteSpace: 'nowrap',
+    textOverflow: 'hidden'
+  },
+  notAvailableNotSelected: {
+    textTransform: "none",
+    border: "2px dashed #ababab",
+    padding: "0.2rem 0.5rem",
+    borderRadius: "10px",
+    color: "#555",
+    maxWidth: '7rem',
+    height: '2.5rem',
+    textOverflow: 'ellipses',
+    whiteSpace: 'nowrap',
+    textOverflow: 'hidden'
+  },
 };
 
 const SaltCard = ({ saltData }) => {
-  const [saltFormList, setsaltFormList] = useState(null);
-  const [medicineData, setMedicineData] = useState([]);
-  const [saltStrengthList, setsaltStrengthList] = useState([]);
-  const [saltPackingList, setsaltPackingList] = useState([]);
+  const [saltFormList, setSaltFormList] = useState([]);
+  const [saltStrengthList, setSaltStrengthList] = useState([]);
+  const [saltPackingList, setSaltPackingList] = useState([]);
   const [currentSelected, setCurrentSelected] = useState({
     saltForm: "",
     saltStrength: "",
@@ -79,339 +123,124 @@ const SaltCard = ({ saltData }) => {
 
   useEffect(() => {
     if (saltData) {
-      const initialForm = saltData?.available_forms?.[0] || null;
-      setsaltFormList(initialForm);
-      setCurrentSelected((prev) => ({ ...prev, saltForm: initialForm }));
+      const firstForm = saltData.available_forms[0] || {};
+      const firstStrength =
+        saltData.salt_forms_json?.[firstForm.type]?.medicineStrength[0] || {};
+      const firstPacking =
+        saltData.salt_forms_json?.[firstForm.type]?.[firstStrength.type]
+          ?.packagingList[0] || {};
 
-      if (initialForm) {
-        const strengths = Object.keys(
-          saltData.salt_forms_json?.[initialForm] || {}
-        );
-        setsaltStrengthList(strengths);
-        setCurrentSelected((prev) => ({ ...prev, saltStrength: strengths[0] }));
+      setSaltFormList(saltData.available_forms || []);
+      setSaltStrengthList(
+        saltData.salt_forms_json?.[firstForm.type]?.medicineStrength || []
+      );
+      setSaltPackingList(
+        saltData.salt_forms_json?.[firstForm.type]?.[firstStrength.type]
+          ?.packagingList || []
+      );
 
-        if (strengths.length > 0) {
-          const packaging = Object.keys(
-            saltData.salt_forms_json?.[initialForm]?.[strengths[0]] || {}
-          );
-          setsaltPackingList(packaging);
-          setCurrentSelected((prev) => ({
-            ...prev,
-            saltPacking: packaging[0],
-          }));
-          const packagingData =
-            saltData.salt_forms_json?.[initialForm]?.[strengths[0]];
-          const firstKey = packagingData ? Object.keys(packagingData)[0] : null;
-          const firstKeyData = firstKey ? packagingData[firstKey] : null;
-          handlePrice(firstKeyData);
-        }
-      }
+      setCurrentSelected({
+        saltForm: firstForm.type || "",
+        saltStrength: firstStrength.type || "",
+        saltPacking: firstPacking.type || "",
+      });
+
+      setResult(firstPacking.lowestPrice || null);
     }
   }, [saltData]);
-
-  useEffect(() => {
-    const response = [];
-    saltData.available_forms.forEach((saltForm) => {
-      const responseGenerator = {
-        saltType: saltForm,
-        isAvailable: false,
-        strength: [],
-      };
-  
-      const strengths = Object.keys(saltData.salt_forms_json[saltForm]);
-      strengths.forEach((strength) => {
-        const strengthData = {
-          strengthType: strength,
-          isAvailable: false,
-          packaging: [],
-        };
-  
-        const packagings = Object.keys(saltData.salt_forms_json[saltForm][strength]);
-        packagings.forEach((packaging) => {
-          const packagingData = saltData.salt_forms_json[saltForm][strength];
-          const currentKey = packagingData ? packaging : null;
-          const currentKeyData = currentKey ? packagingData[currentKey] : null;
-          const price = medicinePrice(currentKeyData);
-  
-          if (price) {
-            responseGenerator.isAvailable = true;
-            strengthData.isAvailable = true;
-            strengthData.packaging.push({
-              packagingType: packaging,
-              isAvailable: true,
-              lowestPrice: price,
-            });
-          } else {
-            strengthData.packaging.push({
-              packagingType: packaging,
-              isAvailable: false,
-            });
-          }
-        });
-  
-        responseGenerator.strength.push(strengthData);
-      });
-  
-      response.push(responseGenerator);
-    });
-  
-    console.log("response", response);
-  }, [saltData]);
-  
-  const medicinePrice = (stores) => {
-    let lowestPrice = Infinity;
-    let result = "";
-  
-    if (stores) {
-      Object.values(stores).forEach((value) => {
-        if (value !== null) {
-          value.forEach((item) => {
-            if (item.selling_price < lowestPrice) {
-              lowestPrice = item.selling_price;
-              result = lowestPrice;
-            }
-          });
-        }
-      });
-    }
-  
-    return result || "";
-  };
-  
-
-//   useEffect(() => {
-//     const response = [];
-//     saltData.available_forms.map((saltForm) => {
-//       const responseGenerator = {
-//         saltType: saltForm,
-//         isAvailable: false,
-//         strength: [],
-//       };
-//       const strengths = Object.keys(saltData.salt_forms_json[saltForm]);
-//       strengths.map((strength, index) => {
-//         responseGenerator.strength.push({
-//           strengthType: strength,
-//           isAvailable: false,
-//           packaging: [],
-//         });
-//         const packagings = Object.keys(
-//           saltData.salt_forms_json?.[saltForm]?.[strengths[index]]
-//         );
-//         packagings.map((packaging, ind) => {
-//           const packagingData =
-//             saltData.salt_forms_json?.[saltForm]?.[strengths[index]];
-//           const currentKey = packagingData
-//             ? Object.keys(packagingData)[ind]
-//             : null;
-//           const currentKeyData = currentKey ? packagingData[currentKey] : null;
-//           const price = medicinePrice(currentKeyData);
-//           if (price) {
-//             responseGenerator.isAvailable = true;
-//             responseGenerator.strength.isAvailable = true;
-//             responseGenerator.strength?.packaging?.push({
-//               packagingType: packaging,
-//               isAvailable: true,
-//               lowestPrice: price,
-//             });
-//           } else {
-//             responseGenerator.strength?.packaging?.push({
-//               packagingType: packaging,
-//               isAvailable: false,
-//             });
-//           }
-//           console.log("response", responseGenerator);
-//         });
-//       });
-
-//       //   console.log("strength", strengths);
-//     });
-//   }, []);
-
-//   const medicinePrice = (stores) => {
-//     let result = "No store have this medicine";
-//     let lowestPrice = Infinity;
-//     let allNull = true;
-
-//     if (stores) {
-//       Object.values(stores).forEach((value) => {
-//         if (value !== null) {
-//           allNull = false;
-//           value.forEach((item) => {
-//             if (item.selling_price < lowestPrice) {
-//               lowestPrice = item.selling_price;
-//               result = lowestPrice;
-//             }
-//           });
-//         }
-//       });
-//     }
-
-//     if (allNull) {
-//       result = "";
-//     }
-//     return result;
-//   };
 
   const handleFormChange = (form) => {
-    setsaltFormList(form);
-    const strengths = Object.keys(saltData.salt_forms_json?.[form] || {});
-    setsaltStrengthList(strengths);
+    const strengths = saltData.salt_forms_json?.[form.type]?.medicineStrength || [];
+    const firstStrength = strengths[0] || {};
+    const packagingData =
+      saltData.salt_forms_json?.[form.type]?.[firstStrength.type]?.packagingList || [];
+    const firstPacking = packagingData[0] || {};
 
-    if (strengths.length > 0) {
-      const packagingData = saltData.salt_forms_json?.[form]?.[strengths[0]];
-      const packaging = Object.keys(packagingData || {});
-      setsaltPackingList(packaging);
-      const firstKey = packaging.length > 0 ? packaging[0] : null;
-      const firstKeyData = firstKey ? packagingData[firstKey] : null;
-      handlePrice(firstKeyData);
-    } else {
-      setsaltPackingList([]);
-      setResult("No store have this medicine");
-    }
+    setSaltStrengthList(strengths);
+    setSaltPackingList(packagingData);
+    setCurrentSelected({
+      saltForm: form.type,
+      saltStrength: firstStrength.type,
+      saltPacking: firstPacking.type,
+    });
+    setResult(firstPacking.lowestPrice);
   };
 
   const handleStrengthChange = (strength) => {
-    const packagingData = saltData.salt_forms_json?.[saltFormList]?.[strength];
-    const packaging = Object.keys(packagingData || {});
-    setsaltPackingList(packaging);
-    const firstKey = packaging.length > 0 ? packaging[0] : null;
-    const firstKeyData = firstKey ? packagingData[firstKey] : null;
-    handlePrice(firstKeyData);
+    const packagingData =
+      saltData.salt_forms_json?.[currentSelected.saltForm]?.[strength.type]?.packagingList || [];
+    const firstPacking = packagingData[0] || {};
+
+    setSaltPackingList(packagingData);
+    setCurrentSelected((prev) => ({
+      ...prev,
+      saltStrength: strength.type,
+      saltPacking: firstPacking.type,
+    }));
+    setResult(firstPacking.lowestPrice);
   };
 
   const handlePackagingChange = (packaging) => {
-    const packagingData = saltData.salt_forms_json?.[saltFormList];
-    const packingData = Object.values(packagingData).reduce(
-      (acc, pack) => acc || pack[packaging],
-      undefined
-    );
-
-    console.log(packingData);
-
-    handlePrice(packingData);
-  };
-
-  const handlePrice = (stores) => {
-    let result = "No store have this medicine";
-    let lowestPrice = Infinity;
-    let allNull = true;
-
-    if (stores) {
-      Object.values(stores).forEach((value) => {
-        if (value !== null) {
-          allNull = false;
-          value.forEach((item) => {
-            if (item.selling_price < lowestPrice) {
-              lowestPrice = item.selling_price;
-              result = `From\u20B9${lowestPrice}`;
-            }
-          });
-        }
-      });
-    }
-
-    if (allNull) {
-      result = "";
-    }
-    setResult(result);
+    setCurrentSelected((prev) => ({
+      ...prev,
+      saltPacking: packaging.type,
+    }));
+    setResult(packaging.lowestPrice);
   };
 
   const handleShow = (type) => {
-    setShowMore((prev) => ({ ...prev, [type]: !showMore[type] }));
+    setShowMore((prev) => ({ ...prev, [type]: !prev[type] }));
   };
+
+  const renderButtons = (list, selected, handleChange, type) => (
+    <Grid container>
+      <Grid item xs={3}>
+        <Typography pt={1}>{`${type.charAt(0).toUpperCase() + type.slice(1)} : `}</Typography>
+      </Grid>
+      <Grid item xs={8} sx={styles.buttonContainer}>
+        {list.slice(0, showMore[type] ? list.length : 4).map((item) => (
+          <Button
+            key={item.type}
+            style={
+              item.isAvailable && item.type === selected
+                ? styles.button
+                : item.isAvailable && item.type !== selected
+                ? styles.notSelected
+                : !item.isAvailable && item.type === selected
+                ? styles.notAvailableButton
+                : styles.notAvailableNotSelected
+            }
+            className="button"
+            onClick={() => handleChange(item)}
+          >
+            {item.type}
+          </Button>
+        ))}
+        {list.length > 4 && (
+          <Button sx={styles.showHide} onClick={() => handleShow(type)}>
+            {showMore[type] ? "hide..." : "more..."}
+          </Button>
+        )}
+      </Grid>
+    </Grid>
+  );
 
   return (
     <Grid container my={10} sx={styles.container}>
       <Grid item xs={4} pl={2}>
-        <Grid container>
-          <Grid item xs={3}>
-            <Typography pt={1}>Form : </Typography>
-          </Grid>
-          <Grid item xs={8} sx={styles.buttonContainer}>
-            {saltData?.available_forms
-              ?.slice(0, showMore.form ? saltData.length : 4)
-              .map((form) => (
-                <Button
-                  key={form}
-                  style={styles.button}
-                  className="button"
-                  onClick={() => handleFormChange(form)}
-                >
-                  {form}
-                </Button>
-              ))}
-            {saltData.length > 4 && (
-              <Button sx={styles.showHide} onClick={() => handleShow("form")}>
-                {showMore.form ? "hide..." : "more..."}
-              </Button>
-            )}
-          </Grid>
-        </Grid>
-        <Grid container my={1}>
-          <Grid item xs={3}>
-            <Typography pt={1}>Strength : </Typography>
-          </Grid>
-          <Grid item xs={8} sx={styles.buttonContainer}>
-            {saltStrengthList
-              ?.slice(0, showMore.strength ? saltStrengthList.length : 4)
-              .map((strength) => (
-                <Button
-                  key={strength}
-                  style={styles.button}
-                  className="button"
-                  onClick={() => handleStrengthChange(strength)}
-                >
-                  {strength}
-                </Button>
-              ))}
-            {saltStrengthList.length > 4 && (
-              <Button
-                sx={styles.showHide}
-                onClick={() => handleShow("strength")}
-              >
-                {showMore.strength ? "hide..." : "more..."}
-              </Button>
-            )}
-          </Grid>
-        </Grid>
-        <Grid container>
-          <Grid item xs={3}>
-            <Typography pt={1}>Packaging : </Typography>
-          </Grid>
-          <Grid item xs={8} sx={styles.buttonContainer}>
-            {saltPackingList
-              .slice(0, showMore.packaging ? saltPackingList.length : 4)
-              .map((packaging) => (
-                <Button
-                  key={packaging}
-                  style={styles.button}
-                  className="button"
-                  onClick={() => handlePackagingChange(packaging)}
-                >
-                  {packaging}
-                </Button>
-              ))}
-            {saltPackingList.length > 4 && (
-              <Button
-                sx={styles.showHide}
-                onClick={() => handleShow("packaging")}
-              >
-                {showMore.packaging ? "hide..." : "more..."}
-              </Button>
-            )}
-          </Grid>
-        </Grid>
+        {renderButtons(saltFormList, currentSelected.saltForm, handleFormChange, "form")}
+        {renderButtons(saltStrengthList, currentSelected.saltStrength, handleStrengthChange, "strength")}
+        {renderButtons(saltPackingList, currentSelected.saltPacking, handlePackagingChange, "packaging")}
       </Grid>
       <Grid item xs={4} sx={styles.infoContainer}>
         <Typography sx={styles.saltName}>{saltData?.salt}</Typography>
         <Typography pt={0.6} sx={styles.selectedDetails}>
-          {currentSelected.saltForm} | {currentSelected.saltStrength} |{" "}
-          {currentSelected.saltPacking}{" "}
+          {currentSelected.saltForm} | {currentSelected.saltStrength} | {currentSelected.saltPacking}
         </Typography>
       </Grid>
       <Grid item xs={4} sx={styles.infoContainer}>
         {result ? (
-          <Typography sx={styles.price}>{result}</Typography>
+          <Typography sx={styles.price}>{`From \u20B9${result}`}</Typography>
         ) : (
           <Typography sx={styles.notAvailable}>
             No stores selling this product near you
