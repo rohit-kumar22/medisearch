@@ -12,9 +12,9 @@ const styles = {
     height: '2.5rem',
     fontWeight: 600,
     boxShadow: 'rgba(183, 218, 212, 0.3) 0px 0px 29px 0px',
-    textOverflow: 'ellipses',
+    textOverflow: 'ellipsis', // fixed typo here as well
     whiteSpace: 'nowrap',
-    textOverflow: 'hidden'
+    overflow: 'hidden' // corrected to lowercase
   },
   container: {
     boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
@@ -39,6 +39,9 @@ const styles = {
     fontWeight: 700,
     color: "#222",
     textAlign: "center",
+    textOverflow: 'ellipsis', // fixed typo here as well
+    whiteSpace: 'nowrap',
+    overflow: 'hidden' // corrected to lowercase
   },
   selectedDetails: {
     fontSize: "1rem",
@@ -73,9 +76,9 @@ const styles = {
     color: "#555",
     maxWidth: '7rem',
     height: '2.5rem',
-    textOverflow: 'ellipses',
+    textOverflow: 'ellipsis', // fixed typo here as well
     whiteSpace: 'nowrap',
-    textOverflow: 'hidden'
+    overflow: 'hidden' // corrected to lowercase
   },
   notAvailableButton: {
     textTransform: "none",
@@ -87,9 +90,9 @@ const styles = {
     height: '2.5rem',
     fontWeight: 600,
     boxShadow: 'rgba(183, 218, 212, 0.3) 0px 0px 29px 0px',
-    textOverflow: 'ellipses',
+    textOverflow: 'ellipsis', // fixed typo here as well
     whiteSpace: 'nowrap',
-    textOverflow: 'hidden'
+    overflow: 'hidden' // corrected to lowercase
   },
   notAvailableNotSelected: {
     textTransform: "none",
@@ -99,11 +102,12 @@ const styles = {
     color: "#555",
     maxWidth: '7rem',
     height: '2.5rem',
-    textOverflow: 'ellipses',
+    textOverflow: 'ellipsis', // fixed typo here as well
     whiteSpace: 'nowrap',
-    textOverflow: 'hidden'
+    overflow: 'hidden' // corrected to lowercase
   },
 };
+
 
 const SaltCard = ({ saltData }) => {
   const [saltFormList, setSaltFormList] = useState([]);
@@ -147,7 +151,7 @@ const SaltCard = ({ saltData }) => {
 
       setResult(firstPacking.lowestPrice || null);
     }
-  }, [saltData]);
+  }, []);
 
   const handleFormChange = (form) => {
     const strengths = saltData.salt_forms_json?.[form.type]?.medicineStrength || [];
@@ -197,7 +201,7 @@ const SaltCard = ({ saltData }) => {
       <Grid item xs={3}>
         <Typography pt={1}>{`${type.charAt(0).toUpperCase() + type.slice(1)} : `}</Typography>
       </Grid>
-      <Grid item xs={8} sx={styles.buttonContainer}>
+      <Grid item xs={9} sx={styles.buttonContainer}>
         {list.slice(0, showMore[type] ? list.length : 4).map((item) => (
           <Button
             key={item.type}
@@ -226,7 +230,7 @@ const SaltCard = ({ saltData }) => {
   );
 
   return (
-    <Grid container my={10} sx={styles.container}>
+    <Grid container my={5} sx={styles.container}>
       <Grid item xs={4} pl={2}>
         {renderButtons(saltFormList, currentSelected.saltForm, handleFormChange, "form")}
         {renderButtons(saltStrengthList, currentSelected.saltStrength, handleStrengthChange, "strength")}
