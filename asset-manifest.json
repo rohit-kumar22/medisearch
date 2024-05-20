@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/medisearch/static/css/main.0f62f150.css",
-    "main.js": "/medisearch/static/js/main.1cd7e21a.js",
+    "main.css": "/medisearch/static/css/main.8f7b8d96.css",
+    "main.js": "/medisearch/static/js/main.7530acb9.js",
     "static/js/453.0caa930c.chunk.js": "/medisearch/static/js/453.0caa930c.chunk.js",
     "index.html": "/medisearch/index.html",
-    "main.0f62f150.css.map": "/medisearch/static/css/main.0f62f150.css.map",
-    "main.1cd7e21a.js.map": "/medisearch/static/js/main.1cd7e21a.js.map",
+    "main.8f7b8d96.css.map": "/medisearch/static/css/main.8f7b8d96.css.map",
+    "main.7530acb9.js.map": "/medisearch/static/js/main.7530acb9.js.map",
     "453.0caa930c.chunk.js.map": "/medisearch/static/js/453.0caa930c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.0f62f150.css",
-    "static/js/main.1cd7e21a.js"
+    "static/css/main.8f7b8d96.css",
+    "static/js/main.7530acb9.js"
   ]
 }
